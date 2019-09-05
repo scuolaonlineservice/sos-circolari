@@ -20,12 +20,12 @@ class MailHelper{
         // Dichiarazione delle variabili che serviranno
         $currentDate = date("d/m/Y");
         $id = $newsletter["IdCircolare"];
-        $number = $circolare["NumeroCircolare"];
-        $actionNeeded = $circolare["azioneRichiesta"];
-        $subject = $circolare["oggetto"];
-        $expireDate = $circolare["dataScadenza"];
+        $number = $newsletter["NumeroCircolare"];
+        $actionNeeded = $newsletter["azioneRichiesta"];
+        $subject = $newsletter["oggetto"];
+        $expireDate = $newsletter["dataScadenza"];
         $formattedExpireDate = UtilityHelper::formatTimeString($expireDate);
-        $recipients = $circolare["gruppiDestinatari"];
+        $recipients = $newsletter["gruppiDestinatari"];
         $href = JURI::root()."index.php?option=com_sos_circolari&view=Dettagli&Id=$id&fm=1";
 
         $replyTitle = "";
