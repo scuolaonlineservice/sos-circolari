@@ -52,20 +52,4 @@ class SosCircolariModelCircolare extends JModelList
 
         return((object) $circolare);
     }
-    /*function getCircolare() {
-
-        $db = JFactory::getDbo();
-        $query = $db->getQuery(true);
-
-        $query->select('sos_circolari.oggetto, sos_circolari.numero, sos_circolari.anno_scolastico, sos_circolari.bozza, j_users.name, sos_circolari.data_pubblicazione')
-            ->from($db->quoteName('sos_circolari'))
-            ->join("inner", $db->quoteName("j_users") . " on (" . $db->quoteName("sos_circolari.autore") . " = " . $db->quoteName("j_users.id") . ")");
-
-        $db->setQuery($query)->execute();
-
-        $result = $db->loadObjectList();
-
-        $circolare = $result[0];
-        return $circolare;
-    }*/
 }

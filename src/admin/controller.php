@@ -16,6 +16,9 @@ defined('_JEXEC') or die('Restricted access');
  * @subpackage  com_helloworld
  * @since       0.0.7
  */
+
+JHtml::_ ( 'behavior.tooltip' );
+
 class SosCircolariController extends JControllerLegacy
 {
     /**
