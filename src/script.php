@@ -4,31 +4,27 @@ defined('_JEXEC') or die('Restricted access');
 
 JHTML::_('behavior.modal');
 
-class com_sos_circolariInstallerScript
-{
+class com_sos_circolariInstallerScript {
     /**
      * method to install the component
      *
      * @return void
      */
-    function install($parent)
-    {
+    function install($parent) {
     }
     /**
      * method to uninstall the component
      *
      * @return void
      */
-    function uninstall($parent)
-    {
+    function uninstall($parent) {
     }
     /**
      * method to update the component
      *
      * @return void
      */
-    function update($parent)
-    {
+    function update($parent) {
 
     }
     /**
@@ -36,15 +32,14 @@ class com_sos_circolariInstallerScript
      *
      * @return void
      */
-    function preflight($type, $parent)
-    {
+    function preflight($type, $parent) {
+
     }
     /**
      * method to run after an install/update/uninstall method
      *
      * @return void
      */
-    function postflight($type, $parent)
-    {
+    function postflight($type, $parent) {
     }
 }
