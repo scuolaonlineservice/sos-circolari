@@ -162,8 +162,8 @@ $new = isset($this->circolare) ? false : true;
         <ul id="destinatari">
             <li><input type="checkbox" name="tutti" onclick="selectAllDestinatari()"><label for="tutti">Tutti</label></li>
             <?php
-                foreach ($this->gruppiDestinatari as $group) {
-                    echo "<li><input type='checkbox' name=$group><label for=$group>$group</label></li>";
+                foreach ($this->gruppiDestinatari as ["id" => $id, "title" => $title]) {
+                    echo "<li><input type='checkbox' name='group-$id'><label for=group-$id>$title</label></li>";
                 }
             ?>
         </ul>

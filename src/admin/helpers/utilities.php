@@ -1,5 +1,6 @@
 <?php
 defined('_JEXEC') or die;
+use \Joomla\Utilities\ArrayHelper;
 
 class Utilities {
     public static function getAnnoScolastico() {
@@ -71,5 +72,20 @@ class Utilities {
         $result = $db->loadObjectList();
 
         return $result;
+    }
+
+    public function getCircolareGroups($id) {
+        $db	= JFactory::getDbo();
+        $query = $db->getQuery(true);
+
+        $query
+            ->select("id_gruppo")
+            ->from("#__com_sos_gruppi_destinatari")
+            ->where("id_circolare=$id");
+
+        $db->setQuery($query);
+        $result = $db->loadObjectList();
+
+        return Utilities::flat(ArrayHelper::fromObject($result), "id_gruppo");
     }
 }

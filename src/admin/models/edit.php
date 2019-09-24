@@ -1,5 +1,6 @@
 <?php
 defined ( '_JEXEC' ) or die ();
+use \Joomla\Utilities\ArrayHelper;
 
 class SosCircolariModelEdit extends JModelList
 {
@@ -50,17 +51,13 @@ class SosCircolariModelEdit extends JModelList
         $query = $db->getQuery(true);
 
         $query
-            ->select("title")
+            ->select("id, title")
             ->from("j_usergroups");
 
         $db->setQuery($query);
         $result = $db->loadObjectList();
 
-        $groups =  array_map(function ($group) {
-            return $group->title;
-        }, $result);
-
-        return $groups;
+        return ArrayHelper::fromObject($result);
 
     }
 

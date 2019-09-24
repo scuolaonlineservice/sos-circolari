@@ -10,7 +10,7 @@ class SosCircolariControllerEdit extends JControllerLegacy
 
     protected function insertGroups($circolareId) {
         $selectedGroups = ArrayHelper::fromObject(array_filter(Utilities::getGroups(), function($group) {
-            return isset($_POST[$group->title]) ? true : false;
+            return isset($_POST["group-$group->id"]) ? true : false;
         }));
 
         if (isset($selectedGroups)) {
@@ -26,6 +26,58 @@ class SosCircolariControllerEdit extends JControllerLegacy
 
             $query
                 ->insert($db->quoteName("#__com_sos_gruppi_destinatari"))
+                ->columns($db->quoteName($columns))
+                ->values($values);
+
+            $db->setQuery($query)->execute();
+        }
+    }
+
+    protected function updateGroups($circolareId) {
+        $oldGroups = Utilities::getCircolareGroups($circolareId);
+
+        $selectedGroups = Utilities::flat(ArrayHelper::fromObject(array_filter(Utilities::getGroups(), function($group) {
+            return isset($_POST["group-$group->id"]) ? true : false;
+        })), "id");
+
+        $groupsToAdd = array_filter($selectedGroups, function($groupId) use ($oldGroups) {
+            return !in_array($groupId, $oldGroups);
+        });
+
+        $groupsToDelete = array_filter($oldGroups, function ($groupId) use ($selectedGroups) {
+            return !in_array($groupId, $selectedGroups);
+        });
+
+        $db = JFactory::getDbo();
+
+        $columns = ["id_gruppo", "id_circolare"];
+
+        //Insert query
+        if (isset($groupsToAdd)) {
+            $query = $db->getQuery(true);
+            $values = [];
+            foreach ($groupsToAdd as $groupId) {
+                array_push($values, "$groupId,$circolareId");
+            }
+
+            $query
+                ->insert($db->quoteName("#__com_sos_gruppi_destinatari"))
+                ->columns($db->quoteName($columns))
+                ->values($values);
+
+            $db->setQuery($query)->execute();
+        }
+
+        //Delete query
+        if (isset($groupsToDelete)) {
+            $query = $db->getQuery(true);
+            $values = [];
+            foreach ($groupsToDelete as $groupId) {
+                array_push($values, "$groupId,$circolareId");
+            }
+
+            $query
+                ->delete($db->quoteName("#__com_sos_gruppi_destinatari"))
                 ->columns($db->quoteName($columns))
                 ->values($values);
 
@@ -79,8 +131,11 @@ class SosCircolariControllerEdit extends JControllerLegacy
     }
 
     public function save() {
+        $db = JFactory::getDbo();
+        $query = $db->getQuery(true);
+
         $userId = JFactory::getUser()->id;
-        $dataFineInterazione = date("Y-m-d", strtotime($_POST["data-fine-interazione"])) ?? "NULL";
+        $dataFineInterazione = $_POST["data-fine-interazione"] ? $db->quoteName(date("Y-m-d", strtotime($_POST["data-fine-interazione"]))) : "NULL";
         $bozza = $_POST["draft"] === "true" ? 1 : 0;
         $annoScolastico = Utilities::getAnnoScolastico();
         $azioneUtente = Utilities::getAzioneIdFromDescription($_POST['action']);
@@ -88,15 +143,12 @@ class SosCircolariControllerEdit extends JControllerLegacy
 
         $id = $_POST["id"] ?? null;
 
-        $db = JFactory::getDbo();
-        $query = $db->getQuery(true);
-
         if ($id) {
             //Update
 
             if ($bozza) {
                 $fields = [
-                    $db->quoteName("data_fine_interazione") . "=" . $db->quote($dataFineInterazione),
+                    $db->quoteName("data_fine_interazione") . "=" . $dataFineInterazione,
                     $db->quoteName("oggetto") . "=" . $db->quote($_POST["oggetto"]),
                     $db->quoteName("testo") . "=" . $db->quote($_POST["testo"]),
                     $db->quoteName("azioni_utente") . "=" . $azioneUtente,
@@ -108,7 +160,7 @@ class SosCircolariControllerEdit extends JControllerLegacy
                 $fields = [
                     $db->quoteName("numero") . "=" . $_POST["numero"],
                     $db->quoteName("data_pubblicazione") . "= CURRENT_TIMESTAMP()",
-                    $db->quoteName("data_fine_interazione") . "=" . $db->quote($dataFineInterazione),
+                    $db->quoteName("data_fine_interazione") . "=" . $dataFineInterazione,
                     $db->quoteName("oggetto") . "=" . $db->quote($_POST["oggetto"]),
                     $db->quoteName("testo") . "=" . $db->quote($_POST["testo"]),
                     $db->quoteName("bozza") . "=" . $bozza,
@@ -126,7 +178,7 @@ class SosCircolariControllerEdit extends JControllerLegacy
                 ->update($db->quoteName("#__com_sos_circolari"))
                 ->set($fields)
                 ->where("id=$id");
-            echo $query;
+            $this->updateGroups($id);
             $this->executeQuery($db, $query, "La circolare è stata aggiornata con successo");
 
         } else {
@@ -151,7 +203,7 @@ class SosCircolariControllerEdit extends JControllerLegacy
                     $db->quote($_POST["testo"]),
                     $userId,
                     $bozza,
-                    $db->quote($dataFineInterazione),
+                    $dataFineInterazione,
                     $db->quote($annoScolastico),
                     $azioneUtente,
                     $db->quote($_POST["protocollo"]),
@@ -181,7 +233,7 @@ class SosCircolariControllerEdit extends JControllerLegacy
                     $userId,
                     $bozza,
                     "CURRENT_TIMESTAMP()",
-                    $db->quote($dataFineInterazione),
+                    $dataFineInterazione,
                     $db->quote($annoScolastico),
                     $azioneUtente,
                     $db->quote($_POST["protocollo"]),
@@ -197,9 +249,9 @@ class SosCircolariControllerEdit extends JControllerLegacy
 
             $this->executeQuery($db, $query, "La circolare è stata pubblicata con successo");
 
-            //$id = $db->insertid();
-            //$this->insertAllegati($id);
-            //$this->insertGroups($id);
+            $id = $db->insertid();
+            $this->insertAllegati($id);
+            $this->insertGroups($id);
         }
     }
 
