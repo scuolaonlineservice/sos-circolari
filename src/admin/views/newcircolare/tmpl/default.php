@@ -2,15 +2,16 @@
 defined('_JEXEC') or die('Restricted Access');
 
 $document = JFactory::getDocument();
-$document->addScript(JURI::root () .'media/com_sos_circolari/js/functionViews/newcircolare.js');
+$document->addScript(JURI::root () .'media/com_sos_circolari/js/newcircolare.js');
 
+$new = isset($this->circolare) ? false : true;
 ?>
 
 <style>
     .circolare {
         border: darkgray 1px solid;
         border-radius: 3px;
-        width: 35%;
+        width: 45%;
         margin: auto;
         padding: 2%;
     }
@@ -18,13 +19,18 @@ $document->addScript(JURI::root () .'media/com_sos_circolari/js/functionViews/ne
     .heading {
         display: grid;
         grid-template-columns: 1fr 1fr 1fr;
-        grid-template-rows: 1fr 1fr 1fr;
-        grid-template-areas: "numero numero protocollo" "oggetto oggetto luogo" "autore autore data";
+        grid-template-rows: 1fr 1fr;
+        grid-template-areas: "numero numero protocollo" "oggetto oggetto luogo";
     }
 
-    .heading label {
+    .heading label, label[for="action"], label[for="data-fine-interazione"] {
         font-weight: bold;
     }
+
+    select {
+        width: 100%;
+    }
+
 
     .align-right {
         text-align: right;
@@ -34,6 +40,10 @@ $document->addScript(JURI::root () .'media/com_sos_circolari/js/functionViews/ne
     input {
         width: 93%;
         background-color: white !important;
+    }
+
+    input[name="numero"] {
+        background-color: #eee !important;
     }
 
     textarea {
@@ -49,17 +59,14 @@ $document->addScript(JURI::root () .'media/com_sos_circolari/js/functionViews/ne
 
     .luogo { grid-area: luogo; }
 
-    .data { grid-area: data; }
-
     .oggetto { grid-area: oggetto; }
-
-    .autore { grid-area: autore; }
 
     label[for="private"], label[for="testo"] {
         margin-top: 9px;
+        font-weight: bold;
     }
 
-    label[for="draft"], label[for="private"] {
+    .radio-buttons label {
         font-weight: bold;
     }
 
@@ -85,9 +92,36 @@ $document->addScript(JURI::root () .'media/com_sos_circolari/js/functionViews/ne
         padding: 1%;
     }
 
-    .destinatari-label {
+    .external-label {
         font-weight: bold;
         margin-top: 9px;
+    }
+
+    .new-allegati {
+        margin-top: 5%;
+        display: none;
+    }
+
+    .allegati-wrapper li {
+        border: 1px #ccc solid;
+        padding: 0.3em 0.5em;
+        margin-bottom: 1em;
+    }
+
+    .allegati-wrapper li input {
+        float: right;
+    }
+
+    input[type="file"] {
+        display: none;
+    }
+
+    .toggle-editor {
+        display: none;
+    }
+
+    .date-picker {
+        display: none;
     }
 
 </style>
@@ -96,62 +130,82 @@ $document->addScript(JURI::root () .'media/com_sos_circolari/js/functionViews/ne
     <div class="heading">
         <div class="numero">
             <label for ="numero">Numero</label>
-            <input type="text" name="numero" id="numero" required>
+            <input type="text" name="numero" id="numero" value="<?php echo $this->numero?>" readonly>
         </div>
         <div class="protocollo align-right">
             <label for="protocollo">Protocollo</label>
-            <input type="text" class = "align-right" name="protocollo" id="protocollo" required>
+            <input type="text" class="align-right" name="protocollo" id="protocollo" value="<?php echo $new ? "" : $this->circolare->protocollo?>">
         </div>
         <div class="luogo align-right">
             <label for="luogo">Luogo</label>
-            <input type="text" class = "align-right" name="luogo" id="luogo" required>
-        </div>
-        <div class="data align-right">
-            <label for="data">Data</label>
-            <input type="text" class = "align-right" name="data" id="data" required>
+            <input type="text" class = "align-right" name="luogo" id="luogo" value="<?php echo $new ? "" : $this->circolare->luogo?>">
         </div>
         <div class="oggetto">
             <label for="oggetto">Oggetto</label>
-            <input type="text" name="oggetto" id="oggetto" required>
-        </div>
-        <div class="autore">
-            <label for="autore">Autore</label>
-            <input type="text" name="autore" id="autore" required>
+            <input type="text" name="oggetto" id="oggetto" value="<?php echo $new ? "" : $this->circolare->oggetto?>">
         </div>
     </div>
-    <label for="draft">Bozza</label>
-    <div class="wrapper">
-        Sì <input type="radio" name="draft" value="true"/>
-        No <input type="radio" name="draft" value="false" checked/>
+    <div class="radio-buttons">
+        <label for="draft">Bozza</label>
+        <div class="wrapper">
+            Sì <input type="radio" name="draft" value="true" <?php echo $new ? "" : "checked"?>/>
+            No <input type="radio" name="draft" value="false" <?php echo $new ? "checked" : ""?>/>
+        </div>
+        <label for="private">Privata</label>
+        <div class="wrapper">
+            Sì <input type="radio" name="private" value="true" <?php echo $new ? "" : $this->circolare->privata == 1 ? "checked" : ""?>/>
+            No <input type="radio" name="private" value="false" <?php echo $new ? "checked" : $this->circolare->privata == 0 ? "checked" : "" ?>/>
+        </div>
     </div>
-    <label for="private">Privata</label>
-    <div class="wrapper">
-        Sì <input type="radio" name="private" value="true"/>
-        No <input type="radio" name="private" value="false" checked/>
-    </div>
-    <p class="destinatari-label">Destinatari</p>
+    <p class="external-label">Destinatari</p>
     <div class="wrapper">
         <ul id="destinatari">
             <li><input type="checkbox" name="tutti" onclick="selectAllDestinatari()"><label for="tutti">Tutti</label></li>
             <?php
-                $destinatari = array("Insegnanti di Classroom", "Docenti", "PersonaleATA", "PSiG");
-
-                foreach ($destinatari as $group) {
+                foreach ($this->gruppiDestinatari as $group) {
                     echo "<li><input type='checkbox' name=$group><label for=$group>$group</label></li>";
                 }
             ?>
         </ul>
+        <label for="action">Azione richiesta (tipo di risposta richiesto ai destinatari della circolare)</label>
+        <select name="action" onchange="onActionChange()">
+            <?php
+                foreach($this->azioniUtente as $row) {
+                    echo "<option id='azione-$row->id' ". ($new ? "" : ($this->circolare->azioni_utente == $row->id ? "selected" : "")) . ">$row->azione</option>";
+                }
+            ?>
+        </select>
+        <div class="date-picker">
+            <label for="data-fine-interazione">Data di scadenza (data entro la quale l'utente può rispondere alla circolare)</label>
+            <?php echo JHTML::calendar($this->circolare->data_fine_interazione, "data-fine-interazione", NULL, "%d-%m-%Y"); ?>
+        </div>
     </div>
     <div class = "body">
         <label for="testo">Testo circolare</label>
         <?php
             $editor = & JFactory::getEditor();
-            echo $editor->display("testo", null, "100%", 180, 90, 6, false);
+            echo $editor->display("testo", ($new ? "" : $this->circolare->testo), "100%", 180, 90, 6, false);
         ?>
     </div>
-    <div class = "allegati">
-        <input type="button" value="Aggiungi allegato" onclick="addAllegato('ciao')" >
+    <p class="external-label">Allegati</p>
+    <div class="allegati-wrapper wrapper">
+        <?php
+            if (isset($this->allegati)) {
+                echo "<ul class=\"existing-allegati-list\">";
+                    foreach ($this->allegati as $allegato) {
+                        echo "<li id='allegato-$allegato->id'>$allegato->nome" . '<input type="button" value="X" onclick="addAllegatoToRemoveList(\'allegato-' . $allegato->id . '\')"></li>';
+                    }
+                echo "</ul>";
+                echo "<ul class='allegati-to-delete'></ul>";
+            }
+        ?>
+        <ul class="new-allegati-list"></ul>
+        <div class="new-allegati"></div>
+        <input type="button" value="Aggiungi allegato" onclick="addAllegato()">
     </div>
     <input type="hidden" name="task" value="save"/>
+    <input type="hidden" name="selected-action" value="azione-0"/>
+    <?php echo $new ? "" : '<input type="hidden" name="id" value="' . $this->circolare->id . '">'?>
+    <?php echo $new ? "" : '<input type="hidden" name="allegatiToDelete" value="[]">'?>
     <?php echo JHtml::_('form.token'); ?>
 </form>

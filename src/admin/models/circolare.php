@@ -2,11 +2,6 @@
 defined ( '_JEXEC' ) or die ();
 use \Joomla\Utilities\ArrayHelper;
 
-function flat(array $elems, $key) {
-    for ($i = 0; $i < count($elems); $i++) { $flat[$i] = $elems[$i][$key]; }
-    return $flat;
-}
-
 class SosCircolariModelCircolare extends JModelList
 {
     function getCircolare($id) {
@@ -17,39 +12,52 @@ class SosCircolariModelCircolare extends JModelList
         $queryUsers = $db->getQuery(true);
         $queryGroups = $db->getQuery(true);
 
-        $queryCircolare->select("numero, oggetto, testo, name, bozza, data_pubblicazione, anno_scolastico, azione, protocollo, privata, luogo")
-            ->from("sos_circolari")
-            ->join("inner", "j_users ON sos_circolari.autore = j_users.id")
-            ->join("inner", "sos_azioni_utente ON sos_circolari.azioni_utente = sos_azioni_utente.id")
-            ->where(["sos_circolari.id = " . $id]);
+        $queryCircolare->select("numero, oggetto, testo, name, bozza, data_pubblicazione, data_fine_interazione, anno_scolastico, azione, protocollo, privata, luogo")
+            ->from("#__com_sos_circolari")
+            ->join("inner", "j_users ON #__com_sos_circolari.autore = j_users.id")
+            ->join("inner", "#__com_sos_azioni_utente ON #__com_sos_circolari.azioni_utente = #__com_sos_azioni_utente.id")
+            ->where(["#__com_sos_circolari.id = " . $id]);
         $db->setQuery($queryCircolare)->execute();
         $circolare = ArrayHelper::fromObject($db->loadObjectList()[0]);
 
         $queryAttachments->select("nome")
-            ->from("sos_allegati")
-            ->join("inner","sos_circolari_allegati on sos_circolari_allegati.id_allegato = sos_allegati.id")
-            ->where(["id_circolare = " . $id]);
+            ->from("#__com_sos_allegati")
+            ->where(["id_circolare=" . $id]);
         $db->setQuery($queryAttachments)->execute();
-        $attachments = flat(ArrayHelper::fromObject($db->loadObjectList()), "nome");
+        $attachments = Utilities::flat(ArrayHelper::fromObject($db->loadObjectList()), "nome");
 
         $queryUsers->select("name")
             ->from("j_users")
-            ->join("inner","sos_utenti_destinatari on sos_utenti_destinatari.id_utente = j_users.id")
-            ->where(["sos_utenti_destinatari.id_circolare = " . $id]);
+            ->join("inner","#__com_sos_utenti_destinatari on #__com_sos_utenti_destinatari.id_utente = j_users.id")
+            ->where(["#__com_sos_utenti_destinatari.id_circolare = " . $id]);
         $db->setQuery($queryUsers)->execute();
-        $users = flat(ArrayHelper::fromObject($db->loadObjectList()), "name");
+        $users = Utilities::flat(ArrayHelper::fromObject($db->loadObjectList()), "name");
 
         $queryGroups->select("title")
             ->from("j_usergroups")
-            ->join("inner","sos_gruppi_destinatari on sos_gruppi_destinatari.id_gruppo = j_usergroups.id")
-            ->where(["sos_gruppi_destinatari.id_circolare = " . $id]);
+            ->join("inner","#__com_sos_gruppi_destinatari on #__com_sos_gruppi_destinatari.id_gruppo = j_usergroups.id")
+            ->where(["#__com_sos_gruppi_destinatari.id_circolare = " . $id]);
         $db->setQuery($queryGroups)->execute();
-        $groups = flat(ArrayHelper::fromObject($db->loadObjectList()), "title");
+        $groups = Utilities::flat(ArrayHelper::fromObject($db->loadObjectList()), "title");
 
         $circolare["utenti"] = $users;
         $circolare["gruppi"] = $groups;
         $circolare["allegati"] = $attachments;
 
         return((object) $circolare);
+    }
+
+    function getListQuery() {
+        $id = JFactory::getApplication()->input->get->get("id");
+        $db = JFactory::getDbo();
+
+        $query = $db->getQuery(true);
+
+        $query->select("#__com_sos_circolari_risposte.azione, #__com_sos_circolari_risposte.data_risposta, j_users.username, j_users.name")
+            ->from("#__com_sos_circolari_risposte")
+            ->join("inner","j_users on #__com_sos_circolari_risposte.id_utente = j_users.id")
+            ->where(["#__com_sos_circolari_risposte.id_circolare = " . $id]);
+
+        return $query;
     }
 }

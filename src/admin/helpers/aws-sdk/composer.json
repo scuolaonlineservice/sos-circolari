@@ -1,0 +1,13 @@
+{
+  "name": "scuolaonlineservice/circolari",
+  "description": "Modulo per Joomla! 3 adibito alla gestione telematica delle circolari emesse da istituzioni scolastiche",
+  "authors": [
+    {
+      "name": "Riccardo Rispoli",
+      "email": "riccardo.rispoli@soluzionifutura.it"
+    }
+  ],
+  "require": {
+    "aws/aws-sdk-php": "3.*"
+  }
+}

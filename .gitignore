@@ -4,6 +4,7 @@
 .env
 composer
 composer.phar
+composer.lock
 
 # Custom
 .idea

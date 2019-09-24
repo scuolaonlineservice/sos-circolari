@@ -44,10 +44,11 @@
             <filename>controller.php</filename>
             <filename>index.html</filename>
             <filename>sos_circolari.php</filename>
+            <folder>controllers</folder>
+            <folder>helpers</folder>
+            <folder>models</folder>
             <folder>sql</folder>
             <folder>tables</folder>
-            <folder>controllers</folder>
-            <folder>models</folder>
             <folder>views</folder>
         </files>
     </administration>

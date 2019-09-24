@@ -3,15 +3,16 @@ defined('_JEXEC') or die('Restricted access');
 
 class SosCircolariViewCircolare extends JViewLegacy
 {
-    function display($tpl = null)
-    {
+    function display($tpl = null) {
         $id = JFactory::getApplication()->input->get->get('id', 0);
         $circolare = $this->getModel()->getCircolare($id);
 
-        $this->assignRef ("circolare", $circolare);
+        $this->assignRef("circolare", $circolare);
 
-        if (count($errors = $this->get('Errors')))
-        {
+        $this->items		= $this->get('Items');
+        $this->pagination	= $this->get('Pagination');
+
+        if (count($errors = $this->get('Errors'))) {
             JError::raiseError(500, implode('<br />', $errors));
 
             return false;

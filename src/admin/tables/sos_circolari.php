@@ -5,6 +5,6 @@ class SosCircolariTableSosCircolari extends JTable
 {
     function __construct(&$db)
     {
-        parent::__construct('sos_circolari', 'id', $db);
+        parent::__construct('#__com_sos_circolari', 'id', $db);
     }
 }

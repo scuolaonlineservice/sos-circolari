@@ -10,8 +10,25 @@ class SosCircolariViewNewCircolare extends JViewLegacy
 {
     function display($tpl = null)
     {
-        if (count($errors = $this->get('Errors')))
-        {
+        $id = JFactory::getApplication()->input->get->get('id', 0);
+
+        if ($id != 0) {
+            $circolare = $this->getModel()->getCircolare($id);
+
+            $this->assignRef("circolare", $circolare);
+        }
+
+        $numero = $this->getModel()->getNumero();
+        $azioniUtente = $this->getModel()->getAzioniUtente();
+        $gruppiDestinatari = $this->getModel()->getGroups();
+        $allegati = $this->getModel()->getAllegati($id);
+
+        $this->assignRef ("numero", $numero);
+        $this->assignRef ("azioniUtente", $azioniUtente);
+        $this->assignRef ("gruppiDestinatari", $gruppiDestinatari);
+        $this->assignRef ("allegati", $allegati);
+
+        if (count($errors = $this->get('Errors'))) {
             JError::raiseError(500, implode('<br />', $errors));
 
             return false;
@@ -24,30 +41,8 @@ class SosCircolariViewNewCircolare extends JViewLegacy
 
     protected function addToolBar()
     {
-        //JToolBarHelper::title(JText::_('SOS Circolari'));
-        //JToolBarHelper::custom('newcircolare.test');
         JToolBarHelper::Title('SOS Circolari');
         JToolBarHelper::apply('newcircolare.save');
-        JToolBarHelper::save('circolari.saveAndClose');
-        JToolBarHelper::save2new('circolari.saveAndNew');
-        JToolBarHelper::divider();
-        JToolBarHelper::divider();
-        JToolBarHelper::cancel('circolari.goToHome');
-
-        if (isset($_SESSION["Circolare"])){
-            switch ($_SESSION["Circolare"]){
-                case 'Bozza':
-                    JFactory::getApplication()->enqueueMessage('Bozza salvata con successo');
-                    break;
-                case 'Pubblicata':
-                    JFactory::getApplication()->enqueueMessage('Circolare pubblicata con successo');
-                    break;
-            }
-            unset($_SESSION["Circolare"]);
-        }
-        if (isset($_SESSION["ErrorPublish"])){
-            JError::raiseWarning( 100, $_SESSION["ErrorPublish"]);
-            unset($_SESSION["ErrorPublish"]);
-        }
+        JToolBarHelper::cancel('newcircolare.cancel');
     }
 }
