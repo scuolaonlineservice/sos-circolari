@@ -29,7 +29,7 @@ $document->addScript(JURI::root () .'media/com_sos_circolari/js/circolari.js');
                         <?php echo JHtml::_('grid.id', $i, $row->id); ?>
                     </td>
                     <td>
-                        <a href="<?php echo JRoute::_("index.php?option=com_sos_circolari&view=" . ($row->bozza == 1 ? "newcircolare" : "circolare") . "&id=$row->id"); ?>">
+                        <a href="<?php echo JRoute::_("index.php?option=com_sos_circolari&view=" . ($row->bozza == 1 ? "edit" : "circolare") . "&id=$row->id"); ?>">
                             <?php echo $row->oggetto; ?>
                         </a>
                     </td>

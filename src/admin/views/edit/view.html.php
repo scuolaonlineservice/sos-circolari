@@ -6,7 +6,7 @@ defined('_JEXEC') or die('Restricted access');
  * "camel case", pertanto il nome di questa view è tutto minuscolo
  */
 
-class SosCircolariViewNewCircolare extends JViewLegacy
+class SosCircolariViewEdit extends JViewLegacy
 {
     function display($tpl = null)
     {
@@ -42,7 +42,7 @@ class SosCircolariViewNewCircolare extends JViewLegacy
     protected function addToolBar()
     {
         JToolBarHelper::Title('SOS Circolari');
-        JToolBarHelper::apply('newcircolare.save');
-        JToolBarHelper::cancel('newcircolare.cancel');
+        JToolBarHelper::apply('edit.save');
+        JToolBarHelper::cancel('edit.cancel');
     }
 }

@@ -10,6 +10,6 @@ const publishCircolare = id => {
         const form = document.getElementById("adminForm")
         form.appendChild(publishInput)
 
-        Joomla.submitform("newcircolare.directPublish")
+        Joomla.submitform("edit.directPublish")
     }
 }

@@ -3,7 +3,7 @@ Joomla.submitbutton = function(task) {
     const fields = ["numero", "protocollo", "oggetto", "luogo"]
 
     switch (task) {
-        case "newcircolare.save":
+        case "edit.save":
             if (!(fields.every(validateField) && validateTesto())) {
                 alert("Alcuni campi non sono stati inseriti correttamente")
             } else if (!validateDestinatari()) {
@@ -12,7 +12,7 @@ Joomla.submitbutton = function(task) {
                 result = confirm("Stai per pubblicare una circolare: confermi?")
             }
             break
-        case "newcircolare.cancel":
+        case "edit.cancel":
             result = confirm("Se chiudi il modulo perderai tutti i dati inseriti! Vuoi continuare?")
             break
     }

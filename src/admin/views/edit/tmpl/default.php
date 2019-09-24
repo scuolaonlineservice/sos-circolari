@@ -2,7 +2,7 @@
 defined('_JEXEC') or die('Restricted Access');
 
 $document = JFactory::getDocument();
-$document->addScript(JURI::root () .'media/com_sos_circolari/js/newcircolare.js');
+$document->addScript(JURI::root () .'media/com_sos_circolari/js/edit.js');
 
 $new = isset($this->circolare) ? false : true;
 ?>
@@ -126,7 +126,7 @@ $new = isset($this->circolare) ? false : true;
 
 </style>
 
-<form class="circolare" action="index.php?option=com_sos_circolari&view=newcircolare" name="adminForm" enctype="multipart/form-data" method="post" id="adminForm">
+<form class="circolare" action="index.php?option=com_sos_circolari&view=edit" name="adminForm" enctype="multipart/form-data" method="post" id="adminForm">
     <div class="heading">
         <div class="numero">
             <label for ="numero">Numero</label>

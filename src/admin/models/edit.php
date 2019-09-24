@@ -1,7 +1,7 @@
 <?php
 defined ( '_JEXEC' ) or die ();
 
-class SosCircolariModelNewCircolare extends JModelList
+class SosCircolariModelEdit extends JModelList
 {
     function getCircolare($id) {
         $db = JFactory::getDbo();
