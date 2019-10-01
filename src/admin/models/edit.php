@@ -75,4 +75,19 @@ class SosCircolariModelEdit extends JModelList
 
         return $result;
     }
+
+    function getSelectedGroups($id) {
+        $db	= JFactory::getDbo();
+        $query = $db->getQuery(true);
+
+        $query
+            ->select("id_gruppo")
+            ->from("#__com_sos_gruppi_destinatari")
+            ->where("id_circolare=$id");
+
+        $db->setQuery($query);
+        $result = $db->loadObjectList();
+
+        return Utilities::flat(ArrayHelper::fromObject($result), "id_gruppo");
+    }
 }

@@ -36,25 +36,29 @@ class SosCircolariControllerEdit extends JControllerLegacy
     protected function updateGroups($circolareId) {
         $oldGroups = Utilities::getCircolareGroups($circolareId);
 
-        $selectedGroups = Utilities::flat(ArrayHelper::fromObject(array_filter(Utilities::getGroups(), function($group) {
+        $selectedGroups = ArrayHelper::fromObject(array_filter(Utilities::getGroups(), function($group) {
             return isset($_POST["group-$group->id"]) ? true : false;
-        })), "id");
+        }));
 
-        $groupsToAdd = array_filter($selectedGroups, function($groupId) use ($oldGroups) {
+        $selectedGroupsIds = array_map(function($group) {
+            return $group["id"];
+        }, $selectedGroups);
+
+        $groupsToAdd = array_filter($selectedGroupsIds, function($groupId) use ($oldGroups) {
             return !in_array($groupId, $oldGroups);
         });
 
-        $groupsToDelete = array_filter($oldGroups, function ($groupId) use ($selectedGroups) {
-            return !in_array($groupId, $selectedGroups);
+        $groupsToDelete = array_filter($oldGroups, function ($groupId) use ($selectedGroupsIds) {
+            return !in_array($groupId, $selectedGroupsIds);
         });
 
         $db = JFactory::getDbo();
 
-        $columns = ["id_gruppo", "id_circolare"];
-
         //Insert query
-        if (isset($groupsToAdd)) {
+        if (sizeof($groupsToAdd) > 0) {
             $query = $db->getQuery(true);
+            $columns = ["id_gruppo", "id_circolare"];
+
             $values = [];
             foreach ($groupsToAdd as $groupId) {
                 array_push($values, "$groupId,$circolareId");
@@ -69,17 +73,17 @@ class SosCircolariControllerEdit extends JControllerLegacy
         }
 
         //Delete query
-        if (isset($groupsToDelete)) {
+        if (sizeof($groupsToDelete) > 0) {
             $query = $db->getQuery(true);
-            $values = [];
+
+            $conditions = [];
             foreach ($groupsToDelete as $groupId) {
-                array_push($values, "$groupId,$circolareId");
+                array_push($conditions, "id_gruppo=$groupId", "id_circolare=$circolareId");
             }
 
             $query
                 ->delete($db->quoteName("#__com_sos_gruppi_destinatari"))
-                ->columns($db->quoteName($columns))
-                ->values($values);
+                ->where($conditions);
 
             $db->setQuery($query)->execute();
         }
@@ -173,12 +177,13 @@ class SosCircolariControllerEdit extends JControllerLegacy
 
             $this->insertAllegati($id);
             $this->deleteAllegati($id);
+            $this->updateGroups($id);
 
             $query
                 ->update($db->quoteName("#__com_sos_circolari"))
                 ->set($fields)
                 ->where("id=$id");
-            $this->updateGroups($id);
+
             $this->executeQuery($db, $query, "La circolare è stata aggiornata con successo");
 
         } else {

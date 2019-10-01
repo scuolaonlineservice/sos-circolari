@@ -21,11 +21,13 @@ class SosCircolariViewEdit extends JViewLegacy
         $numero = $this->getModel()->getNumero();
         $azioniUtente = $this->getModel()->getAzioniUtente();
         $gruppiDestinatari = $this->getModel()->getGroups();
+        $selectedGroups = $this->getModel()->getSelectedGroups($id);
         $allegati = $this->getModel()->getAllegati($id);
 
         $this->assignRef ("numero", $numero);
         $this->assignRef ("azioniUtente", $azioniUtente);
         $this->assignRef ("gruppiDestinatari", $gruppiDestinatari);
+        $this->assignRef ("selectedGroups", $selectedGroups);
         $this->assignRef ("allegati", $allegati);
 
         if (count($errors = $this->get('Errors'))) {
