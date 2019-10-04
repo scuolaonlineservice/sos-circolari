@@ -1,10 +1,9 @@
 <?php
 defined('_JEXEC') or die('Restricted access');
+use \Joomla\CMS\MVC\View\HtmlView;
 
-class SosCircolariViewCircolari extends JViewLegacy
-{
-    function display($tpl = null)
-    {
+class SosCircolariViewCircolari extends HtmlView {
+    function display($tpl = null) {
         $this->items		= $this->get('Items');
         $this->pagination	= $this->get('Pagination');
 
@@ -20,8 +19,7 @@ class SosCircolariViewCircolari extends JViewLegacy
         parent::display($tpl);
     }
 
-    protected function addToolBar()
-    {
+    protected function addToolBar() {
         JToolBarHelper::title(JText::_('SOS Circolari'));
         JToolBarHelper::addNew('circolari.add');
     }

@@ -1,8 +1,9 @@
 <?php
 defined('_JEXEC') or die('Restricted access');
 
-class SosCircolariViewCircolare extends JViewLegacy
-{
+use \Joomla\CMS\MVC\View\HtmlView;
+
+class SosCircolariViewCircolare extends HtmlView {
     function display($tpl = null) {
         $id = JFactory::getApplication()->input->get->get('id', 0);
         $circolare = $this->getModel()->getCircolare($id);
@@ -23,8 +24,7 @@ class SosCircolariViewCircolare extends JViewLegacy
         parent::display($tpl);
     }
 
-    protected function addToolBar()
-    {
+    protected function addToolBar() {
         JToolBarHelper::title(JText::_('SOS Circolari'));
     }
 }

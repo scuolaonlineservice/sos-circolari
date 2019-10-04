@@ -1,9 +1,9 @@
 <?php
 defined('_JEXEC') or die('Restricted access');
-use \Joomla\Utilities\ArrayHelper;
+use Joomla\Utilities\ArrayHelper;
+use Joomla\CMS\MVC\Controller\BaseController;
 
-class SosCircolariControllerEdit extends JControllerLegacy
-{
+class SosCircolariControllerEdit extends BaseController {
     public function cancel() {
         $this->setRedirect('index.php?option=com_sos_circolari');
     }
