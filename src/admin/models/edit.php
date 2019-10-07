@@ -90,4 +90,18 @@ class SosCircolariModelEdit extends JModelList
 
         return Utilities::flat(ArrayHelper::fromObject($result), "id_gruppo");
     }
+
+    function getExcludedGroups() {
+        $db	= JFactory::getDbo();
+        $query = $db->getQuery(true);
+
+        $query
+            ->select("id")
+            ->from("#__com_sos_circolari_gruppi_esclusi");
+
+        $db->setQuery($query);
+        $result = $db->loadObjectList();
+
+        return Utilities::flat(ArrayHelper::fromObject($result), "id");
+    }
 }

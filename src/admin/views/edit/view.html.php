@@ -17,12 +17,14 @@ class SosCircolariViewEdit extends HtmlView {
         $azioniUtente = $this->getModel()->getAzioniUtente();
         $gruppiDestinatari = $this->getModel()->getGroups();
         $selectedGroups = $this->getModel()->getSelectedGroups($id);
+        $excludedGroups = $this->getModel()->getExcludedGroups();
         $allegati = $this->getModel()->getAllegati($id);
 
         $this->assignRef ("numero", $numero);
         $this->assignRef ("azioniUtente", $azioniUtente);
         $this->assignRef ("gruppiDestinatari", $gruppiDestinatari);
         $this->assignRef ("selectedGroups", $selectedGroups);
+        $this->assignRef ("excludedGroups", $excludedGroups);
         $this->assignRef ("allegati", $allegati);
 
         if (count($errors = $this->get('Errors'))) {
