@@ -4,6 +4,7 @@
 .env
 composer
 composer.phar
+composer.lock
 
 # Custom
 .idea
@@ -13,3 +14,6 @@ logs
 
 # Env variables
 .env
+
+# Zip files
+*.zip

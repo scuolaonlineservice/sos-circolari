@@ -1,7 +1,20 @@
 # SOS Circolari
 
 ## Elenco features
-TODO
+#### Disponibili per la review:
+#####Admin panel:
+- Lista delle circolari
+- Modulo per la creazione di nuove circolari, pubbliche e non
+- Modulo per modificare le circolari in bozza
+- Validazione dei dati mediante script js (percorso: `src/media/js`)
+
+##Paradigma MVC
+Il modulo è in linea con il paradigma [MVC](https://en.wikipedia.org/wiki/Model–view–controller) (model-view-controller), standard per i componenti di Joomla! 3. 
+Esso si struttura pertanto in questi tre componenti:
+- `view`, ciò che l'utente vede e con cui interagisce
+- `model`, ciò che permette di acquisire e preparare i dati da visualizzare, solitamente da un database
+- `controller`, ciò che l'utente aziona mediante l'interazione con la view e che permette di interagire con la struttura backend (es. database)
+
 
 ## Requisiti
 - [Docker](https://docs.docker.com/install/)
@@ -32,6 +45,3 @@ da indirizzo web.
 4. Eseguire `npm start`
 5. Installa il componente da console web andando all'indirizzo 
 `http://localhost/administrator/index.php?option=com_installer` e cliccando `Install from folder/Check and install`
-
-Le modifiche fatte ai vari files dentro alla cartella `src` 
-saranno subito visibili in seguito al primo refresh della pagina.

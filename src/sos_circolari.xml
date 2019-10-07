@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="component" version="3.2" method="upgrade">
+<extension type="component" version="3.2.0" method="upgrade">
+
     <name>sos_circolari</name>
-    <creationDate>May 2019</creationDate>
+    <creationDate>Settembre 2019</creationDate>
     <author>Soluzioni Futura</author>
     <authorEmail>info@soluzionifutura.it</authorEmail>
     <authorUrl>https://soluzionifutura.it</authorUrl>
@@ -22,8 +23,6 @@
         </sql>
     </uninstall>
 
-    <scriptfile>script.php</scriptfile>
-
     <media destination="com_sos_circolari" folder="media">
         <filename>index.html</filename>
         <folder>js</folder>
@@ -31,30 +30,27 @@
         <folder>images</folder>
     </media>
 
-    <update>
-        <schemas>
-            <schemapath type="mysql">sql/updates/mysql/</schemapath>
-        </schemas>
-    </update>
-
     <files folder="site">
         <filename>controller.php</filename>
-        <filename>sos_circolari.php</filename>
         <filename>index.html</filename>
-        <folder>assets</folder>
-        <folder>helpers</folder>
-        <folder>controllers</folder>
+        <filename>sos_circolari.php</filename>
         <folder>models</folder>
         <folder>views</folder>
-        <folder>layouts</folder>
     </files>
 
     <administration>
-        <menu link="index.php?option=com_sos_circolari">SOS Circolari</menu>
+        <menu link='index.php?option=com_sos_circolari'>SOS Circolari</menu>
         <files folder="admin">
-            <filename>sos_circolari.php</filename>
+            <filename>controller.php</filename>
             <filename>index.html</filename>
+            <filename>sos_circolari.php</filename>
+            <folder>controllers</folder>
+            <folder>helpers</folder>
+            <folder>models</folder>
             <folder>sql</folder>
+            <folder>tables</folder>
+            <folder>views</folder>
         </files>
     </administration>
+
 </extension>
